@@ -49,9 +49,7 @@ public class TextController : MonoBehaviour {
 		else if (myState == States.upstairs_1)	{upstairs_1();}
 		else if (myState == States.exit_1)		{exit_1();}
 		else if (myState == States.freedom)		{freedom();}
-		
-		// check if user wants to quit
-		else if (Input.GetKeyDown(KeyCode.Q))	{Application.Quit();} 
+
 	
 	}
 	
@@ -67,6 +65,7 @@ public class TextController : MonoBehaviour {
 					"Music: http://www.bensound.com, images taken from Google Graphics";
 		// state change
 		if (Input.GetKeyDown(KeyCode.Return))	{myState = States.cell;}
+		else if (Input.GetKeyDown(KeyCode.Q))	{Application.Quit();} 
 	}
 	
 	void cell()
@@ -257,6 +256,8 @@ public class TextController : MonoBehaviour {
 					"Press P to play again, or Q to exit!";
 		
 		if (Input.GetKeyDown(KeyCode.P))	{myState = States.menu;}
+		// check if user wants to quit
+		else if (Input.GetKeyDown(KeyCode.Q))	{Application.Quit();} 
 	}
 	
 	// code for changing the background
