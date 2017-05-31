@@ -6,19 +6,20 @@ public class TextController : MonoBehaviour {
 
 	public Text text;
 	private Sprite background;
-	
+	public AudioSource bgMusicEscape;
+	public AudioSource bgMusicFreedom;	
 	
 	private enum States {
-		start, cell, mirror, sheets_0, lock_0, cell_mirror, sheets_1, 
+		menu, cell, mirror, sheets_0, lock_0, cell_mirror, sheets_1, 
 		lock_1,corridor_0, corridor_1, upstairs_0, upstairs_1, closet, 
 		exit_0, exit_1, freedom
-		};
+	};
 	private States myState;
 	
 	// Use this for initialization
 	void Start () 
 	{
-		myState = States.start;	
+		myState = States.menu;	
 	}
 	
 	// Update is called once per frame
@@ -27,8 +28,9 @@ public class TextController : MonoBehaviour {
 		// change background
 		Change();
 		
+		// print and check states
 		print(myState);
-		if (myState == States.start)			{start();}
+		if (myState == States.menu)				{menu();}
 		else if (myState == States.cell)		{cell();}
 		else if (myState == States.sheets_0)	{sheets_0();}
 		else if (myState == States.lock_0)		{lock_0();}
@@ -47,20 +49,31 @@ public class TextController : MonoBehaviour {
 		else if (myState == States.upstairs_1)	{upstairs_1();}
 		else if (myState == States.exit_1)		{exit_1();}
 		else if (myState == States.freedom)		{freedom();}
+		
+		// check if user wants to quit
+		else if (Input.GetKeyDown(KeyCode.Q))	{Application.Quit();} 
+	
 	}
 	
-	void start()
+	void menu()
 	{
+		bgMusicFreedom.Stop();
+		bgMusicEscape.Stop ();
 		background = Resources.Load<Sprite>("prison word");
 		Change();
-		text.text = "Press Enter to start\n\n\n\n" + 
-					"Music: http://www.bensound.com, images from google graphics";
+		text.text = "A quasi-text adventure game\n\n\n" + 
+					"Press Enter to start, Q to quit\n\n\n\n\n" + 
+					"Game by Jakub Rupiński.\n" + 
+					"Music: http://www.bensound.com, images taken from Google Graphics";
 		// state change
 		if (Input.GetKeyDown(KeyCode.Return))	{myState = States.cell;}
 	}
 	
 	void cell()
 	{
+		if (!bgMusicEscape.isPlaying)
+			bgMusicEscape.Play();
+			
 		background = Resources.Load<Sprite>("cell");
 		Change();
 		text.text = "You wake up in a prison cell. It's cold inside - you should probably try " + 
@@ -202,7 +215,7 @@ public class TextController : MonoBehaviour {
 	{
 		background = Resources.Load<Sprite>("corridor");
 		text.text = "You are still inside a long corridor...with a key in your hand\n" + 
-					"There are stairs that go up, a closet and a door with \"EXIT\" sign on them.\n\n" + 
+					"There are stairs that go up and a door with \"EXIT\" sign on them.\n\n" + 
 					"Press U to go Upstairs, or E to go to Exit";
 		
 		// state change
@@ -214,7 +227,8 @@ public class TextController : MonoBehaviour {
 	{
 		background = Resources.Load<Sprite>("upstairs");
 		text.text = "You go upstairs.\n The sun is still on the horizon, and " + 
-					"rays of sunlight up the room. The room is still empty though. " +
+					"rays of sunlight brighten up the room. The room is still " +
+					"empty though.\n\n " +
 					"Press D to go back to the corridor downstairs";
 		
 		if (Input.GetKeyDown(KeyCode.D))	{myState = States.corridor_1;}
@@ -234,12 +248,15 @@ public class TextController : MonoBehaviour {
 	
 	void freedom()
 	{
+		bgMusicEscape.Stop();
+		if (!bgMusicFreedom.isPlaying)
+			bgMusicFreedom.Play();
 		background = Resources.Load<Sprite>("freedom");
 		text.text = "You feel a breeze of air on your face, and the sunlight in your eyes.\n" + 
 					"You managed to escape! Congratulations!\n\n" + 
-					"Press P to play again!";
+					"Press P to play again, or Q to exit!";
 		
-		if (Input.GetKeyDown(KeyCode.P))	{myState = States.start;}
+		if (Input.GetKeyDown(KeyCode.P))	{myState = States.menu;}
 	}
 	
 	// code for changing the background
